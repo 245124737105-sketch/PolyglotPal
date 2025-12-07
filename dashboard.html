@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Polyglot Pal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">Polyglot Pal</div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="active">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a></li>
+                <li><a href="translate.html">
+                        <span>🌐</span>
+                        <span>Translate</span>
+                    </a></li>
+                <li><a href="quiz.html">
+                        <span>🎯</span>
+                        <span>Quiz</span>
+                    </a></li>
+                <li><a href="#lessons">
+                        <span>📚</span>
+                        <span>Lessons</span>
+                    </a></li>
+                <li><a href="#progress">
+                        <span>📈</span>
+                        <span>Progress</span>
+                    </a></li>
+                <li><a href="#settings">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </a></li>
+            </ul>
+            <div class="user-profile-mini">
+                <div class="avatar" id="userAvatar">{{ name[0] if name else 'U' }}</div>
+                <div class="user-info">
+                    <h4 id="userName">{{ name }}</h4>
+                    <p><a href="/logout" style="color: var(--accent-glow);">Logout</a></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="welcomeName">{{ name }}</span>! 👋</h1>
+                    <p class="date-display" id="dateDisplay">{{ date_today }}</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="window.location.href='translate.html'">
+                        Start Learning
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-info">
+                        <h3 id="streakDays">0</h3>
+                        <p>Day Streak</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <h3 id="totalPoints">0</h3>
+                        <p>Total Points</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <h3 id="wordsLearned">0</h3>
+                        <p>Words Learned</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="quizzesTaken">0</h3>
+                        <p>Quizzes Taken</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Quick Actions -->
+                <div class="section-card">
+                    <h2 class="section-title">Quick Actions</h2>
+                    <div class="action-cards">
+                        <div class="action-card" onclick="window.location.href='translate.html'">
+                            <div class="action-icon">🌐</div>
+                            <h3>Translate</h3>
+                            <p>Practice translation</p>
+                        </div>
+                        <div class="action-card" onclick="window.location.href='quiz.html'">
+                            <div class="action-icon">🎯</div>
+                            <h3>Take Quiz</h3>
+                            <p>Test your knowledge</p>
+                        </div>
+                        <div class="action-card" onclick="startLesson()">
+                            <div class="action-icon">📚</div>
+                            <h3>New Lesson</h3>
+                            <p>Start learning</p>
+                        </div>
+                        <div class="action-card" onclick="reviewWords()">
+                            <div class="action-icon">🔄</div>
+                            <h3>Review</h3>
+                            <p>Practice vocabulary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Progress -->
+                <div class="section-card">
+                    <h2 class="section-title">Learning Progress</h2>
+                    <div class="progress-list">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="language-flag">🇪🇸</span>
+                                <span class="language-name">Spanish</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="progress-percent">65%</span>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="language-flag">🇫🇷</span>
+                                <span class="language-name">French</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%"></div>
+                            </div>
+                            <span class="progress-percent">42%</span>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="language-flag">🇩🇪</span>
+                                <span class="language-name">German</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 28%"></div>
+                            </div>
+                            <span class="progress-percent">28%</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-block" style="margin-top: 1.5rem;" onclick="addLanguage()">
+                        + Add New Language
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="section-card" style="margin-top: 2rem;">
+                <h2 class="section-title">
+                    Recent Activity
+                    <a href="#" style="font-size: 0.9rem; color: var(--accent-glow); font-weight: 500;">View All</a>
+                </h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">🎯</div>
+                        <div class="activity-content">
+                            <h4>Completed Spanish Quiz</h4>
+                            <p>Scored 85% on Beginner Level 3</p>
+                        </div>
+                        <span class="activity-time">2 hours ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">⭐</div>
+                        <div class="activity-content">
+                            <h4>Earned Achievement</h4>
+                            <p>"Week Warrior" - 7 day streak!</p>
+                        </div>
+                        <span class="activity-time">1 day ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">📝</div>
+                        <div class="activity-content">
+                            <h4>Learned 15 New Words</h4>
+                            <p>French vocabulary expansion</p>
+                        </div>
+                        <span class="activity-time">2 days ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">🌐</div>
+                        <div class="activity-content">
+                            <h4>Translation Practice</h4>
+                            <p>Completed 20 translations</p>
+                        </div>
+                        <span class="activity-time">3 days ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Goal -->
+            <div class="section-card" style="margin-top: 2rem;">
+                <h2 class="section-title">Daily Goal</h2>
+                <div class="goal-progress">
+                    <div class="goal-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)"
+                                stroke-width="8" />
+                            <circle id="goalCircle" cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)"
+                                stroke-width="8" stroke-dasharray="283" stroke-dashoffset="113"
+                                transform="rotate(-90 50 50)" stroke-linecap="round" />
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#8b5cf6" />
+                                    <stop offset="100%" style="stop-color:#6366f1" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="goal-text">
+                            <h3 id="goalPercent">60%</h3>
+                            <p>Complete</p>
+                        </div>
+                    </div>
+                    <div class="goal-details">
+                        <h3>Keep it up! 🎉</h3>
+                        <p>You've completed 3 out of 5 daily tasks</p>
+                        <div class="goal-tasks">
+                            <div class="goal-task completed">
+                                <span class="task-check">✓</span>
+                                <span>Complete a lesson</span>
+                            </div>
+                            <div class="goal-task completed">
+                                <span class="task-check">✓</span>
+                                <span>Practice 10 words</span>
+                            </div>
+                            <div class="goal-task completed">
+                                <span class="task-check">✓</span>
+                                <span>Take a quiz</span>
+                            </div>
+                            <div class="goal-task">
+                                <span class="task-check"></span>
+                                <span>Review flashcards</span>
+                            </div>
+                            <div class="goal-task">
+                                <span class="task-check"></span>
+                                <span>Practice speaking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize dashboard with user data
+        function initDashboard() {
+            // Simulate loading user stats from backend
+            const increment = targetValue / steps;
+            let current = 0;
+            let step = 0;
+
+            const timer = setInterval(() => {
+                step++;
+                current = Math.min(Math.floor(increment * step), targetValue);
+                element.textContent = current;
+
+                if (step >= steps) {
+                    clearInterval(timer);
+                    element.textContent = targetValue;
+                }
+            }, duration / steps);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', options);
+
+            const dateDisplay = document.getElementById('dateDisplay');
+            if (dateDisplay && !dateDisplay.textContent.includes(',')) {
+                dateDisplay.textContent = dateStr;
+            }
+        }
+
+        function startLesson() {
+            alert('Lesson feature coming soon! 📚');
+        }
+
+        function reviewWords() {
+            alert('Review feature coming soon! 🔄');
+        }
+
+        function addLanguage() {
+            alert('Add language feature coming soon! 🌍');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+
+</html>

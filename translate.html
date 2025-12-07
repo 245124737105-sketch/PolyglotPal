@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate - Polyglot Pal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="speech-fix.js" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">Polyglot Pal</div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a></li>
+                <li><a href="translate.html" class="active">
+                        <span>🌐</span>
+                        <span>Translate</span>
+                    </a></li>
+                <li><a href="quiz.html">
+                        <span>🎯</span>
+                        <span>Quiz</span>
+                    </a></li>
+                <li><a href="#lessons">
+                        <span>📚</span>
+                        <span>Lessons</span>
+                    </a></li>
+                <li><a href="#progress">
+                        <span>📈</span>
+                        <span>Progress</span>
+                    </a></li>
+                <li><a href="#settings">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </a></li>
+            </ul>
+            <div class="user-profile-mini">
+                <div class="avatar" id="userAvatar">{{ name[0] if name else 'U' }}</div>
+                <div class="user-info">
+                    <h4 id="userName">{{ name if name else 'User' }}</h4>
+                    <p><a href="/logout" style="color: var(--accent-glow);">Logout</a></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Translate Text</h1>
+                <p class="page-subtitle">Translate between 100+ languages with one click</p>
+            </div>
+
+            <!-- Translation Container -->
+            <div class="translation-wrapper">
+                <!-- Source Text Input -->
+                <form id="translationForm" class="translation-form">
+                    <label for="sourceText"
+                        style="font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
+                        Source Text
+                    </label>
+                    <textarea id="sourceText" placeholder="Enter text to translate..." maxlength="5000" rows="6"
+                        style="width: 100%; resize: vertical; padding: 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: var(--text-main); font-size: 1.1rem; line-height: 1.6; font-family: var(--font-body); outline: none;"></textarea>
+                    <div class="controls"
+                        style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <button type="button" id="translateBtn" class="btn btn-primary"
+                            aria-label="Translate the entered text">Translate</button>
+                        <button type="button" id="micBtn" class="btn btn-secondary" aria-label="Speak to input text"
+                            title="Click to speak">
+                            🎤 Speak
+                        </button>
+                        <button type="button" id="clearSource" class="btn btn-secondary"
+                            aria-label="Clear the source text">Clear</button>
+                        <button type="button" id="copyTranslation" class="btn btn-secondary"
+                            aria-label="Copy the translated text to clipboard">Copy Translation</button>
+                        <button type="button" id="speakBtn" class="btn btn-secondary" aria-label="Listen to translation"
+                            title="Click to hear translation" style="display: none;">
+                            🔊 Listen
+                        </button>
+                        <span id="sourceCharCount" style="font-size: 0.9rem; color: var(--text-muted);">0 / 5000</span>
+                    </div>
+                </form>
+
+                <!-- Language Selectors -->
+                <div class="language-bar">
+                    <div class="language-selector-wrapper">
+                        <label for="sourceLang"
+                            style="font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">Source
+                            Language</label>
+                        <select id="sourceLang" class="language-select">
+                            <option value="auto">Detect Language</option>
+                            <option value="en" selected>English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ru">Russian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                            <option value="zh-cn">Chinese (Simplified)</option>
+                            <option value="zh-tw">Chinese (Traditional)</option>
+                            <option value="ar">Arabic</option>
+                            <option value="hi">Hindi</option>
+                            <option value="te">Telugu</option>
+                            <option value="bn">Bengali</option>
+                            <option value="vi">Vietnamese</option>
+                            <option value="th">Thai</option>
+                            <option value="tr">Turkish</option>
+                            <option value="pl">Polish</option>
+                            <option value="uk">Ukrainian</option>
+                            <option value="nl">Dutch</option>
+                            <option value="sv">Swedish</option>
+                            <option value="no">Norwegian</option>
+                            <option value="da">Danish</option>
+                            <option value="fi">Finnish</option>
+                        </select>
+                        <span class="detected-lang" id="detectedLang"></span>
+                    </div>
+
+                    <button class="swap-btn" id="swapBtn" title="Swap languages"
+                        aria-label="Swap source and target languages" style="margin-top: 1.5rem;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M7 16V4M7 4L3 8M7 4L11 8"></path>
+                            <path d="M17 8V20M17 20L21 16M17 20L13 16"></path>
+                        </svg>
+                    </button>
+
+                    <div class="language-selector-wrapper">
+                        <label for="targetLang"
+                            style="font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">Target
+                            Language</label>
+                        <select id="targetLang" class="language-select">
+                            <option value="hi" selected>Hindi</option>
+                            <option value="es">Spanish</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="pt">Portuguese</option>
+                            <option value="ru">Russian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                            <option value="zh-cn">Chinese (Simplified)</option>
+                            <option value="zh-tw">Chinese (Traditional)</option>
+                            <option value="ar">Arabic</option>
+                            <option value="te">Telugu</option>
+                            <option value="bn">Bengali</option>
+                            <option value="vi">Vietnamese</option>
+                            <option value="th">Thai</option>
+                            <option value="tr">Turkish</option>
+                            <option value="pl">Polish</option>
+                            <option value="uk">Ukrainian</option>
+                            <option value="nl">Dutch</option>
+                            <option value="sv">Swedish</option>
+                            <option value="no">Norwegian</option>
+                            <option value="da">Danish</option>
+                            <option value="fi">Finnish</option>
+                        </select>
+                    </div>
+                    <div id="translationLoader"
+                        style="display: none; font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem;">
+                        Translating...</div>
+                </div>
+
+                <!-- Translation Output -->
+                <div style="margin-top: 1.5rem;">
+                    <label for="translationOutput"
+                        style="font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">
+                        Translation
+                    </label>
+                    <div id="translationOutput" class="translation-output"
+                        style="min-height: 120px; padding: 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: var(--text-main); font-size: 1.1rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">
+                    </div>
+                    <div id="pronunciation" class="pronunciation"
+                        style="margin-top: 0.5rem; font-style: italic; color: var(--text-muted); padding-left: 1rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <span class="translation-info" id="translationInfo"></span>
+            </div>
+
+            <!-- Translation History -->
+            <div class="section-card" style="margin-top: 2rem;">
+                <h2 class="section-title">
+                    Recent Translations
+                    <button class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;"
+                        id="refreshHistory" aria-label="Refresh translation history">
+                        Refresh
+                    </button>
+                </h2>
+                <div id="historyList" class="history-list">
+                    <p class="text-muted">No translations yet. Start translating to see your history!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // Elements
+        const sourceText = document.getElementById('sourceText');
+        const sourceLang = document.getElementById('sourceLang');
+        const targetLang = document.getElementById('targetLang');
+        const translateBtn = document.getElementById('translateBtn');
+        const micBtn = document.getElementById('micBtn');
+        const speakBtn = document.getElementById('speakBtn');
+        const swapBtn = document.getElementById('swapBtn');
+        const clearSource = document.getElementById('clearSource');
+        const copyTranslation = document.getElementById('copyTranslation');
+        const translationOutput = document.getElementById('translationOutput');
+        const translationLoader = document.getElementById('translationLoader');
+        const sourceCharCount = document.getElementById('sourceCharCount');
+        const detectedLang = document.getElementById('detectedLang');
+        const pronunciation = document.getElementById('pronunciation');
+        const translationInfo = document.getElementById('translationInfo');
+        const historyList = document.getElementById('historyList');
+        const refreshHistory = document.getElementById('refreshHistory');
+
+        // Initialize
+        loadTranslationHistory();
+
+        // Update char count on input
+        sourceText.addEventListener('input', updateCharCount);
+
+        // Translate button click
+        translateBtn.addEventListener('click', () => {
+            const text = sourceText.value.trim();
+            if (!text) {
+                showToast('Please enter text to translate');
+                return;
+            }
+            translateText(text);
+        });
+
+        // Also translate on Enter key (in textarea)
+        sourceText.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {  // Allow Shift+Enter for new lines
+                e.preventDefault();
+                translateBtn.click();
+            }
+        });
+
+        // Voice Output - Text to Speech
+        speakBtn.addEventListener('click', () => {
+            const text = translationOutput.textContent.trim();
+            if (!text) {
+                showToast('No translation to speak');
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                showToast('Text-to-speech not supported in this browser');
+                return;
+            }
+
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = targetLang.value;
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+
+            speakBtn.textContent = '🔊 Speaking...';
+            speakBtn.disabled = true;
+
+            utterance.onend = () => {
+                speakBtn.textContent = '🔊 Listen';
+                speakBtn.disabled = false;
+            };
+
+            utterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event.error);
+                showToast('Speech error: ' + event.error);
+                speakBtn.textContent = '🔊 Listen';
+                speakBtn.disabled = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        });
+
+        // Swap languages
+        swapBtn.addEventListener('click', () => {
+            if (sourceLang.value === 'auto') {
+                showToast('Cannot swap from auto-detect');
+                return;
+            }
+
+            const tempLang = sourceLang.value;
+            sourceLang.value = targetLang.value;
+            targetLang.value = tempLang;
+
+            // Also swap text if there's a translation
+            if (translationOutput.textContent) {
+                const tempText = sourceText.value;
+                sourceText.value = translationOutput.textContent;
+                translateText(sourceText.value);
+            }
+        });
+
+        // Clear source text
+        clearSource.addEventListener('click', () => {
+            sourceText.value = '';
+            clearTranslation();
+            updateCharCount();
+        });
+
+        // Copy translation
+        copyTranslation.addEventListener('click', async () => {
+            const text = translationOutput.textContent;
+            if (!text) {
+                showToast('Nothing to copy');
+                return;
+            }
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                showToast('Translation copied to clipboard! ✓');
+            } catch (err) {
+                showToast('Failed to copy');
+            }
+        });
+
+        // Translate text
+        async function translateText(text) {
+            console.log('[DEBUG] translateText called with:', text);
+            if (!text) {
+                console.log('[DEBUG] No text provided, returning');
+                return;
+            }
+
+            // Show loader
+            console.log('[DEBUG] Showing loader');
+            translationLoader.style.display = 'block';
+            translationOutput.textContent = '';
+            translationOutput.style.color = 'var(--text-main)';
+            pronunciation.textContent = '';
+            speakBtn.style.display = 'none';
+
+            try {
+                console.log('[DEBUG] Starting translation...');
+                console.log('[DEBUG] Source lang:', sourceLang.value);
+                console.log('[DEBUG] Target lang:', targetLang.value);
+
+                const requestBody = {
+                    text: text,
+                    source: sourceLang.value,
+                    target: targetLang.value
+                };
+                console.log('[DEBUG] Request body:', requestBody);
+
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                console.log('[DEBUG] Response status:', response.status);
+                console.log('[DEBUG] Response ok:', response.ok);
+
+                const data = await response.json();
+                console.log('[DEBUG] Response data:', data);
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Translation failed');
+                }
+
+                // Display translation
+                console.log('[DEBUG] Displaying translation:', data.translated);
+                translationOutput.textContent = data.translated;
+
+                // Show pronunciation if available
+                if (data.pronunciation && data.pronunciation !== data.translated) {
+                    pronunciation.textContent = `[${data.pronunciation}]`;
+                    console.log('[DEBUG] Pronunciation:', data.pronunciation);
+                }
+
+                // Show detected language
+                if (sourceLang.value === 'auto' && data.src_lang) {
+                    const langName = getLanguageName(data.src_lang);
+                    detectedLang.textContent = `Detected: ${langName}`;
+                    console.log('[DEBUG] Detected language:', langName);
+                } else {
+                    detectedLang.textContent = '';
+                }
+
+                translationInfo.textContent = `Translated to ${getLanguageName(data.dest_lang)}`;
+
+                // Show speak button
+                speakBtn.style.display = 'inline-block';
+
+                // Reload history
+                setTimeout(loadTranslationHistory, 500);
+
+                showToast('Translation successful! ✓');
+                console.log('[DEBUG] Translation complete!');
+
+            } catch (error) {
+                console.error('[ERROR] Translation failed:', error);
+                console.error('[ERROR] Error stack:', error.stack);
+                translationOutput.textContent = error.message || 'Translation failed. Please try again.';
+                translationOutput.style.color = '#ef4444';
+                showToast('Translation failed: ' + error.message);
+            } finally {
+                translationLoader.style.display = 'none';
+                console.log('[DEBUG] Loader hidden');
+            }
+        }
+
+        // Clear translation
+        function clearTranslation() {
+            translationOutput.textContent = '';
+            pronunciation.textContent = '';
+            detectedLang.textContent = '';
+            translationInfo.textContent = '';
+            speakBtn.style.display = 'none';
+        }
+
+        // Update character count
+        function updateCharCount() {
+            const count = sourceText.value.length;
+            sourceCharCount.textContent = `${count} / 5000`;
+        }
+
+        // Load translation history
+        async function loadTranslationHistory() {
+            try {
+                const response = await fetch('/api/translation/history');
+                if (!response.ok) {
+                    throw new Error('Failed to load history');
+                }
+
+                const history = await response.json();
+
+                if (!history || history.length === 0) {
+                    historyList.innerHTML = '<p class="text-muted">No translations yet. Start translating to see your history!</p>';
+                    return;
+                }
+
+                historyList.innerHTML = history.map(item => `
+                    <div class="history-item" onclick="restoreTranslation('${escapeHtml(item.source_text)}', '${item.source_lang}', '${item.target_lang}')">
+                        <div class="history-content">
+                            <div class="history-text">
+                                <strong>${escapeHtml(item.source_text)}</strong>
+                                <span class="arrow">→</span>
+                                <span>${escapeHtml(item.translated_text)}</span>
+                            </div>
+                            <div class="history-meta">
+                                <span>${getLanguageName(item.source_lang)} → ${getLanguageName(item.target_lang)}</span>
+                                <span class="dot">•</span>
+                                <span>${formatTimestamp(item.timestamp)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+
+        // Restore translation from history
+        function restoreTranslation(text, source, target) {
+            sourceText.value = text;
+            sourceLang.value = source;
+            targetLang.value = target;
+            updateCharCount();
+            translateText(text);
+        }
+
+        // Refresh history
+        refreshHistory.addEventListener('click', loadTranslationHistory);
+
+        // Helper functions
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function getLanguageName(code) {
+            const languages = {
+                'auto': 'Auto Detect',
+                'en': 'English',
+                'es': 'Spanish',
+                'fr': 'French',
+                'de': 'German',
+                'it': 'Italian',
+                'pt': 'Portuguese',
+                'ru': 'Russian',
+                'ja': 'Japanese',
+                'ko': 'Korean',
+                'zh-cn': 'Chinese (Simplified)',
+                'zh-tw': 'Chinese (Traditional)',
+                'ar': 'Arabic',
+                'hi': 'Hindi',
+                'te': 'Telugu',
+                'bn': 'Bengali',
+                'vi': 'Vietnamese',
+                'th': 'Thai',
+                'tr': 'Turkish',
+                'pl': 'Polish',
+                'uk': 'Ukrainian',
+                'nl': 'Dutch',
+                'sv': 'Swedish',
+                'no': 'Norwegian',
+                'da': 'Danish',
+                'fi': 'Finnish'
+            };
+            return languages[code] || code;
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'Unknown';
+
+            // Handle Firestore timestamp
+            let date;
+            if (timestamp._seconds) {
+                date = new Date(timestamp._seconds * 1000);
+            } else if (timestamp.seconds) {
+                date = new Date(timestamp.seconds * 1000);
+            } else {
+                date = new Date(timestamp);
+            }
+
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load user info on page load
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/user/stats');
+                if (response.ok) {
+                    const stats = await response.json();
+                    // User info would come from the server, for now just update avatar
+                    // This will be populated by the server template
+                }
+            } catch (error) {
+                console.error('Failed to load user info:', error);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+        });
+    </script>
+</body>
+
+</html>

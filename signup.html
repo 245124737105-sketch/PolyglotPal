@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Polyglot Pal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Start your language journey today</p>
+            </div>
+
+            <div class="flash-message"
+                style="color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
+
+            </div>
+
+
+            <form class="auth-form" action="/signup" method="POST">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••"
+                        required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+
+            <div class="auth-separator">
+                <span>or sign up with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="btn btn-secondary">Google</button>
+                <button class="btn btn-secondary">GitHub</button>
+            </div>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Log In</a></p>
+                <p style="margin-top: 1rem;"><a href="index.html">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

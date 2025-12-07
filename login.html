@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Polyglot Pal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Please enter your details to sign in</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="flash-message"
+                style="color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
+                {{ messages[0] }}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form class="auth-form" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••"
+                        required>
+                </div>
+
+                <div class="form-actions">
+                    <label class="form-check">
+                        <input type="checkbox" name="remember"> Remember me
+                    </label>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Log In</button>
+            </form>
+
+            <div class="auth-separator">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="btn btn-secondary">Google</button>
+                <button class="btn btn-secondary">GitHub</button>
+            </div>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+                <p style="margin-top: 1rem;"><a href="index.html">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
