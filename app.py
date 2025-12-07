@@ -14,13 +14,30 @@ from firebase_admin import auth as firebase_auth
 # Load environment variables
 load_dotenv()
 
+import json
+
 # Initialize Flask app
 app = Flask(__name__, template_folder='.', static_folder='.')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
 
 # Initialize Firebase
-FIREBASE_CRED_PATH = os.getenv('FIREBASE_CREDENTIALS_PATH', 'firebase-credentials.json')
-db = initialize_firebase(FIREBASE_CRED_PATH)
+# First check for JSON content in environment variable (Render/Cloud)
+firebase_creds = os.getenv('FIREBASE_CREDENTIALS')
+if firebase_creds:
+    # If it's a string containing JSON
+    try:
+        cred_dict = json.loads(firebase_creds)
+        db = initialize_firebase(cred_dict)
+        print("Initialized Firebase from environment variable")
+    except json.JSONDecodeError as e:
+        print(f"Error parsing FIREBASE_CREDENTIALS: {e}")
+        # Fallback
+        FIREBASE_CRED_PATH = os.getenv('FIREBASE_CREDENTIALS_PATH', 'firebase-credentials.json')
+        db = initialize_firebase(FIREBASE_CRED_PATH)
+else:
+    # Fallback to file path (Local)
+    FIREBASE_CRED_PATH = os.getenv('FIREBASE_CREDENTIALS_PATH', 'firebase-credentials.json')
+    db = initialize_firebase(FIREBASE_CRED_PATH)
 
 # Initialize Flask-Login
 login_manager = LoginManager()
